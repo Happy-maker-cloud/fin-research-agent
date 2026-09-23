@@ -7,7 +7,12 @@ name = "fin-research-agent"
 version = "0.1.0"
 description = "A verifiable financial research agent"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "pandas>=2.0,<3.0",
+    "pydantic-settings>=2.0,<3.0",
+    "psycopg[binary]>=3.1,<4.0",
+    "sqlalchemy>=2.0,<3.0",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

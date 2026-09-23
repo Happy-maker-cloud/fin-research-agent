@@ -1,17 +1,20 @@
-from pydantic import Field
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 class Settings(BaseSettings):
-    market_api_key: str = Field(default="")
-    request_timeout: float = Field(default=5.0, gt=0)
-    max_concurrency: int = Field(default=3, ge=1, le=20)
-
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=PROJECT_ROOT / ".env",
         env_file_encoding="utf-8",
-        extra="ignore",
     )
+
+    market_api_key: str = ""
+    request_timeout: float = 5.0
+    max_concurrency: int = 3
+    database_url: str
 
 
 settings = Settings()
