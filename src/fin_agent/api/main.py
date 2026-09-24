@@ -1,4 +1,6 @@
 import re
+from dataclasses import asdict
+from datetime import date
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request
@@ -8,6 +10,7 @@ from fastapi.responses import JSONResponse
 from fin_agent.api.schemas import (
     BatchQuoteRequest,
     BatchQuoteResponse,
+    DailyBarResponse,
     ErrorResponse,
     QuoteResponse,
 )
@@ -15,6 +18,7 @@ from fin_agent.exceptions import (
     MarketDataError,
     MarketDataTimeoutError,
 )
+from fin_agent.services.akshare_market import fetch_daily_bar
 from fin_agent.services.market_data import fetch_quote, fetch_quotes
 
 app = FastAPI(
@@ -184,3 +188,27 @@ async def get_batch_quotes(
         count=len(responses),
         quotes=responses,
     )
+
+
+@app.get(
+    "/api/v1/market-data/{symbol}",
+    response_model=DailyBarResponse,
+)
+async def get_market_data(
+    symbol: str,
+    as_of: date,
+) -> DailyBarResponse:
+    normalized_symbol = symbol.strip()
+
+    if not re.fullmatch(r"\d{6}", normalized_symbol):
+        raise HTTPException(
+            status_code=422,
+            detail="A股代码必须是6位数字",
+        )
+
+    bar = await fetch_daily_bar(
+        symbol=normalized_symbol,
+        as_of=as_of,
+    )
+
+    return DailyBarResponse(**asdict(bar))

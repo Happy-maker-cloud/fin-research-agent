@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
@@ -49,3 +49,17 @@ class ErrorResponse(BaseModel):
     message: str
     request_id: str
     details: list[dict[str, Any]] | None = None
+
+
+class DailyBarResponse(BaseModel):
+    symbol: str
+    as_of: date
+    data_date: date
+    open: float = Field(gt=0)
+    high: float = Field(gt=0)
+    low: float = Field(gt=0)
+    close: float = Field(gt=0)
+    volume: float = Field(ge=0)
+    source: str
+    retrieved_at: datetime
+    cached: bool
