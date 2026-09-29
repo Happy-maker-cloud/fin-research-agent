@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from fin_agent.api.schemas import (
@@ -25,6 +26,17 @@ app = FastAPI(
     title="Financial Research Agent API",
     description="金融研究 Agent 数据服务",
     version="0.1.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -134,10 +146,11 @@ async def market_data_error_handler(
 
 
 @app.get("/health")
-async def health_check() -> dict[str, str]:
-    """服务健康检查。"""
-
-    return {"status": "ok"}
+async def health() -> dict[str, str]:
+    return {
+        "status": "ok",
+        "service": "fin-research-agent",
+    }
 
 
 @app.get(
