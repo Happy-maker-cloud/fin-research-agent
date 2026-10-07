@@ -8,6 +8,14 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from fin_agent.analytics.metrics import (
+    annualized_volatility,
+    information_coefficient,
+    max_drawdown,
+    sharpe_ratio,
+    simple_returns,
+    total_return,
+)
 from fin_agent.api.schemas import (
     BatchQuoteRequest,
     BatchQuoteResponse,
@@ -225,3 +233,21 @@ async def get_market_data(
     )
 
     return DailyBarResponse(**asdict(bar))
+
+
+@app.get("/api/v1/metrics/demo")
+async def metrics_demo() -> dict[str, float | None]:
+    prices = [100, 102, 101, 105, 103, 108]
+    returns = simple_returns(prices)
+
+    factors = [1, 2, 3, 4, 5]
+    forward_returns = [0.01, 0.03, 0.02, 0.05, 0.04]
+
+    return {
+        "total_return": total_return(prices),
+        "annualized_volatility": annualized_volatility(returns),
+        "sharpe": sharpe_ratio(returns),
+        "max_drawdown": max_drawdown(prices),
+        "ic": information_coefficient(factors, forward_returns),
+        "rank_ic": information_coefficient(factors, forward_returns, rank=True),
+    }

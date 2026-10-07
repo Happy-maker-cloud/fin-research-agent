@@ -1,5 +1,6 @@
 "use client";
 
+import MetricsPanel from "@/components/MetricsPanel";
 import { useEffect, useState } from "react";
 
 interface HealthResponse {
@@ -86,6 +87,7 @@ export default function Home() {
           )}
         </section>
       </div>
+      <MetricsPanel />
     </main>
   );
 }
