@@ -23,6 +23,7 @@ from fin_agent.api.schemas import (
     ErrorResponse,
     QuoteResponse,
 )
+from fin_agent.backtest.momentum import demo_backtest
 from fin_agent.exceptions import (
     MarketDataError,
     MarketDataTimeoutError,
@@ -251,3 +252,8 @@ async def metrics_demo() -> dict[str, float | None]:
         "ic": information_coefficient(factors, forward_returns),
         "rank_ic": information_coefficient(factors, forward_returns, rank=True),
     }
+
+
+@app.get("/api/v1/backtest/demo")
+def get_demo_backtest() -> dict:
+    return demo_backtest()

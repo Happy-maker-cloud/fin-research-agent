@@ -1,5 +1,6 @@
 "use client";
 
+import BacktestPanel from "@/components/BacktestPanel";
 import MetricsPanel from "@/components/MetricsPanel";
 import StockQueryForm from "@/components/StockQueryForm";
 import { useEffect, useState } from "react";
@@ -90,6 +91,7 @@ export default function Home() {
       </div>
       <MetricsPanel />
       <StockQueryForm />
+      <BacktestPanel />
     </main>
   );
 }
